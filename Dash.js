@@ -2,35 +2,48 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 const renderDashes = (props, layoutWidth) => {
-    const { lineColor, lineWidth, gapWidth, style } = props;
-    const { height, flexDirection } = style;
-    const vericalStyles = StyleSheet.create({
+    const { borderColor, length, gapWidth, style, thickness } = props;
+    const { flexDirection } = style;
+    const display = flexDirection === 'column';
+    const width = display ? thickness : length;
+    const height = display ? length : thickness ;
+    const gapLength = display ? thickness : gapWidth ;
+    const gapHeight = display ? gapWidth : thickness ;
+    const styles = StyleSheet.create({
         lineStyle: {
-            width: Number.parseInt(height),
-            height: Number.parseInt(lineWidth),
-            backgroundColor: lineColor,
+            width: Number.parseInt(width),
+            height: Number.parseInt(height),
+            backgroundColor: borderColor,
         },
         gapStyle: {
-            width: Number.parseInt(height),
-            height: Number.parseInt(gapWidth),
+            width: Number.parseInt(gapLength),
+            height: Number.parseInt(gapHeight),
             opacity: 0,
         }
     });
-    const horizontalStyles = StyleSheet.create({
-        lineStyle: {
-            width: Number.parseInt(lineWidth),
-            height: Number.parseInt(height),
-            backgroundColor: lineColor
-        },
-        gapStyle: {
-            width: Number.parseInt(gapWidth),
-            height: Number.parseInt(height),
-            opacity: 0
-        }
-    });
-    const styles = flexDirection === 'column' ? vericalStyles : horizontalStyles;
     let dashes = [];
     for (let i = 0; i < layoutWidth;) {
+        i += Number.parseInt(length);
+        if (i > layoutWidth) {
+            if( flexDirection === 'column'){
+                dashes.push(
+                    <View
+                        key={i + 'd'}
+                        style={{ ...styles.lineStyle, height: layoutWidth - (i - length) }}
+                    />
+                );
+            } else {
+                dashes.push(
+                    <View
+                        key={i + 'd'}
+                        style={{ ...styles.lineStyle, width: layoutWidth - (i - length) }}
+                    />
+                );
+            }
+            
+            break;
+        }
+        i+=Number.parseInt(gapWidth);
         dashes.push(
             <View
                 key={i + 'd'}
@@ -43,20 +56,18 @@ const renderDashes = (props, layoutWidth) => {
                 style={styles.gapStyle}
             />
         );
-        i += Number.parseInt(gapWidth) + Number.parseInt(lineWidth);
     }
     return dashes;
 }
 
-export default HorizontalDash = (props) => {
+export default Dash = (props) => {
     const [width, setWidth] = useState(0);
-    const [height, setHeight] = useState(0);
     return (
         <View style={{...props.style}} onLayout={(event) => {
             var { width } = event.nativeEvent.layout;
             setWidth(width);
         }}>
-            {renderDashes(props, width, height)}
+            {renderDashes(props, width)}
         </View>
     );
 };

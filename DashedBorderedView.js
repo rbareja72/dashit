@@ -4,18 +4,20 @@ import Dash from './Dash';
 
 export default DashedBorderedView = (props) => {
     const [width, setWidth] = useState(0);
+    const { borderColor, length, gapWidth, thickness } = props;
+    const padding = Number.parseInt(thickness) + 2;
     return (
-        <View style={{...props.style, padding: 5}} onLayout={(e) => {
+        <View style={{...props.style, padding: padding }} onLayout={(e) => {
             const { width } = e.nativeEvent.layout;
             setWidth(width);
         }}>
             <Dash
-                lineColor="black"
-                lineWidth="15"
-                gapWidth="10"
+                length={length}
+                gapWidth={gapWidth}
+                borderColor={borderColor}
+                thickness={thickness}
                 style={{
                     width: '100%',
-                    height: 1,
                     flexDirection: 'row',   
                     position: 'absolute',
                     top:0,
@@ -23,39 +25,39 @@ export default DashedBorderedView = (props) => {
                 }}
             />
             <Dash
-                lineColor="black"
-                lineWidth="15"
-                gapWidth="10"
+                length={length}
+                gapWidth={gapWidth}
+                borderColor={borderColor}
+                thickness={thickness}
                 style={{
                     width: props.style.height,
-                    height: 1,
                     flexDirection: 'column',                    
                     position: 'absolute',
                     left: 0
                 }}
             />
             <Dash
-                lineColor="black"
-                lineWidth="15"
-                gapWidth="10"
+                length={length}
+                gapWidth={gapWidth}
+                borderColor={borderColor}
+                thickness={thickness}
                 style={{
                     width: props.style.height,
-                    height: 1,
                     flexDirection: 'column',
                     position: 'absolute',
-                    left: width
+                    left: width-thickness
                 }}
             />              
-             <Dash
-                lineColor="black"
-                lineWidth="15"
-                gapWidth="10"
+            <Dash
+                length={length}
+                gapWidth={gapWidth}
+                borderColor={borderColor}
+                thickness={thickness}
                 style={{ 
                     width: '100%', 
-                    height: 1, 
                     flexDirection: 'row', 
                     position: 'absolute',
-                    bottom: 0,
+                    bottom: Number.parseInt(thickness)-2,
                 }}
             />
             {props.children} 
